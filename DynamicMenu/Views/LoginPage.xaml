@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DynamicMenu.Views.LoginPage"
+             Title="LoginPage"
+             xmlns:viewmodels="clr-namespace:DynamicMenu.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:DynamicMenu.Models;assembly=DynamicMenu"
+             x:DataType="viewmodels:LoginViewModel"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False"
+             >
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding AppearingCommand}"/>
+    </ContentPage.Behaviors>
+    
+    
+    
+    <VerticalStackLayout Padding="10">
+
+
+            <Label Text="Available names:" FontSize="12" FontAttributes="Bold" Margin="0, 0, 0, 10" TextColor="{StaticResource Primary}" />
+
+            <RefreshView>
+                <!-- Frame creates margin and border around the control -->
+                <Frame BackgroundColor="{StaticResource InputGrey}" Padding="4,4,4,4">
+                    <CollectionView ItemsSource="{Binding AvailableUsers}"
+                                Margin="10"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="CenterAndExpand"
+                        SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:User">
+                                <Label Text="{Binding Name}" Padding="10,4" BackgroundColor="{StaticResource Secondary}" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            No items
+                            <!-- UI element content doesn't work on Android: https://github.com/dotnet/maui/issues/10819: -->
+                            <!-- <Label Text="No items" />-->
+                        </CollectionView.EmptyView>
+
+                    </CollectionView>
+                </Frame>
+            </RefreshView>
+
+            <!-- list of available usernames -->
+            <!--<RefreshView Command="{Binding ReloadUsersCommand}" IsRefreshing="{Binding IsRefreshing}">
+                <Grid>
+                    <Grid RowDefinitions="*" ColumnDefinitions="*,*">
+                        <ActivityIndicator Grid.Row="0" Grid.Column="0" IsRunning="{Binding AvailableUsersLoading}" Color="{StaticResource Primary}"/>
+                    </Grid>
+                    <CollectionView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding AvailableUsers}"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="CenterAndExpand"
+                        SelectionMode="None"
+                        BackgroundColor="{StaticResource Secondary}">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:User">
+                                <Label Text="{Binding Name}" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        --><!-- content for empty or null items collection -->
+                        <!-- This doesn't work on Android: https://github.com/dotnet/maui/issues/10819 --><!--
+                        <CollectionView.EmptyView>
+                            <ContentView>
+                                <Label Text="No subjects entered yet..." />
+                            </ContentView>
+                        </CollectionView.EmptyView>
+                        
+                    </CollectionView>
+                </Grid>
+            </RefreshView>-->
+
+        <Entry Text="{Binding Name}" WidthRequest="200" Placeholder="Name">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding NameChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+
+        <Button Text="Login" Command="{Binding LoginCommand}"/>
+
+        <Label Text="Invalid name" TextColor="Red" IsVisible="{Binding UnknownUsernameTextVisible}"/>
+
+    </VerticalStackLayout>
+</ContentPage>
